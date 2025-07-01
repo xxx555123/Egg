@@ -1,0 +1,534 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Egg计划工具 - 成就图鉴</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #2D5016 0%, #4A7C59 100%);
+            height: 812px;
+            width: 375px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        ::-webkit-scrollbar {
+            display: none;
+        }
+
+        .status-bar {
+            height: 44px;
+            background: rgba(45, 80, 22, 0.9);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 16px;
+            color: white;
+            font-size: 14px;
+            font-weight: 600;
+        }
+
+        .main-container {
+            height: calc(812px - 44px - 83px);
+            overflow-y: auto;
+            padding: 16px;
+        }
+
+        .glass-card {
+            background: rgba(255, 255, 255, 0.9);
+            backdrop-filter: blur(12px);
+            border-radius: 16px;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            padding: 16px;
+            margin-bottom: 16px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        .header-section {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .header-title {
+            font-size: 24px;
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 8px;
+        }
+
+        .progress-info {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 16px;
+        }
+
+        .progress-text {
+            font-size: 14px;
+            color: #666;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 8px;
+            background: rgba(255, 255, 255, 0.5);
+            border-radius: 4px;
+            overflow: hidden;
+            margin-bottom: 16px;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #FFD700, #FFA500);
+            width: 65%;
+            border-radius: 4px;
+            transition: width 0.3s ease;
+        }
+
+        .achievement-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 12px;
+            margin-bottom: 20px;
+        }
+
+        .achievement-card {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 16px;
+            padding: 16px;
+            text-align: center;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .achievement-card.unlocked {
+            border: 2px solid #FFD700;
+            box-shadow: 0 6px 20px rgba(255, 215, 0, 0.3);
+        }
+
+        .achievement-card.locked {
+            opacity: 0.5;
+            filter: grayscale(1);
+        }
+
+        .achievement-card.unlocked::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: linear-gradient(45deg, transparent, rgba(255, 215, 0, 0.1), transparent);
+            animation: shine 2s infinite;
+        }
+
+        @keyframes shine {
+            0% { transform: translateX(-100%) translateY(-100%) rotate(45deg); }
+            100% { transform: translateX(100%) translateY(100%) rotate(45deg); }
+        }
+
+        .achievement-icon {
+            font-size: 32px;
+            margin-bottom: 8px;
+        }
+
+        .achievement-name {
+            font-size: 12px;
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 4px;
+        }
+
+        .achievement-desc {
+            font-size: 10px;
+            color: #666;
+            line-height: 1.3;
+        }
+
+        .achievement-badge {
+            position: absolute;
+            top: 8px;
+            right: 8px;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: #FFD700;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 10px;
+            color: white;
+        }
+
+        .section-title {
+            color: white;
+            font-size: 20px;
+            font-weight: bold;
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .milestone-list {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .milestone-item {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 12px;
+            padding: 12px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .milestone-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: #4ECDC4;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+            color: white;
+        }
+
+        .milestone-content {
+            flex: 1;
+        }
+
+        .milestone-title {
+            font-size: 14px;
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 2px;
+        }
+
+        .milestone-desc {
+            font-size: 12px;
+            color: #666;
+        }
+
+        .milestone-status {
+            font-size: 12px;
+            color: #4ECDC4;
+            font-weight: bold;
+        }
+
+        .share-section {
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        .share-btn {
+            background: linear-gradient(135deg, #FF6B35, #FF8E53);
+            color: white;
+            border: none;
+            border-radius: 25px;
+            padding: 12px 24px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(255, 107, 53, 0.3);
+        }
+
+        .share-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(255, 107, 53, 0.4);
+        }
+
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 83px;
+            background: white;
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            border-top: 1px solid #eee;
+        }
+
+        .nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 4px;
+            color: #666;
+            text-decoration: none;
+            font-size: 12px;
+        }
+
+        .nav-item.active {
+            color: #4ECDC4;
+        }
+
+        .nav-icon {
+            font-size: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="status-bar">
+        <span>9:41</span>
+        <span>成就图鉴</span>
+        <span>100%</span>
+    </div>
+
+    <div class="main-container">
+        <div class="glass-card">
+            <div class="header-section">
+                <div class="header-title">🐱 猫咪成就图鉴</div>
+                <div class="progress-info">
+                    <div class="progress-text">收集进度: 13/20</div>
+                    <div class="progress-text">65%</div>
+                </div>
+                <div class="progress-bar">
+                    <div class="progress-fill"></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="section-title">
+            <i class="fas fa-trophy" style="color: #FFD700;"></i>
+            已解锁成就
+        </div>
+
+        <div class="achievement-grid">
+            <div class="achievement-card unlocked">
+                <div class="achievement-badge">
+                    <i class="fas fa-star"></i>
+                </div>
+                <div class="achievement-icon">🐱</div>
+                <div class="achievement-name">基础猫咪</div>
+                <div class="achievement-desc">完成第一个任务</div>
+            </div>
+
+            <div class="achievement-card unlocked">
+                <div class="achievement-badge">
+                    <i class="fas fa-star"></i>
+                </div>
+                <div class="achievement-icon">🐱‍🎓</div>
+                <div class="achievement-name">学霸猫</div>
+                <div class="achievement-desc">完成10个学习任务</div>
+            </div>
+
+            <div class="achievement-card unlocked">
+                <div class="achievement-badge">
+                    <i class="fas fa-star"></i>
+                </div>
+                <div class="achievement-icon">🐱‍🏃</div>
+                <div class="achievement-name">运动健将</div>
+                <div class="achievement-desc">连续运动7天</div>
+            </div>
+
+            <div class="achievement-card unlocked">
+                <div class="achievement-badge">
+                    <i class="fas fa-crown"></i>
+                </div>
+                <div class="achievement-icon">🐱‍👑</div>
+                <div class="achievement-name">银边猫王</div>
+                <div class="achievement-desc">连续3天完成所有任务</div>
+            </div>
+
+            <div class="achievement-card unlocked">
+                <div class="achievement-badge">
+                    <i class="fas fa-crown"></i>
+                </div>
+                <div class="achievement-icon">🐱‍✨</div>
+                <div class="achievement-name">金光猫神</div>
+                <div class="achievement-desc">连续7天完成Top3</div>
+            </div>
+
+            <div class="achievement-card unlocked">
+                <div class="achievement-badge">
+                    <i class="fas fa-star"></i>
+                </div>
+                <div class="achievement-icon">🐱‍💻</div>
+                <div class="achievement-name">工作狂猫</div>
+                <div class="achievement-desc">完成50个工作任务</div>
+            </div>
+
+            <div class="achievement-card unlocked">
+                <div class="achievement-badge">
+                    <i class="fas fa-star"></i>
+                </div>
+                <div class="achievement-icon">🐱‍🛒</div>
+                <div class="achievement-name">购物达人</div>
+                <div class="achievement-desc">完成20个购物任务</div>
+            </div>
+
+            <div class="achievement-card unlocked">
+                <div class="achievement-badge">
+                    <i class="fas fa-star"></i>
+                </div>
+                <div class="achievement-icon">🐱‍🍳</div>
+                <div class="achievement-name">美食家</div>
+                <div class="achievement-desc">完成15个烹饪任务</div>
+            </div>
+
+            <div class="achievement-card unlocked">
+                <div class="achievement-badge">
+                    <i class="fas fa-star"></i>
+                </div>
+                <div class="achievement-icon">🐱‍🧹</div>
+                <div class="achievement-name">清洁专家</div>
+                <div class="achievement-desc">完成25个清洁任务</div>
+            </div>
+
+            <div class="achievement-card unlocked">
+                <div class="achievement-badge">
+                    <i class="fas fa-star"></i>
+                </div>
+                <div class="achievement-icon">🐱‍✈️</div>
+                <div class="achievement-name">旅行猫</div>
+                <div class="achievement-desc">完成5个旅行任务</div>
+            </div>
+
+            <div class="achievement-card unlocked">
+                <div class="achievement-badge">
+                    <i class="fas fa-star"></i>
+                </div>
+                <div class="achievement-icon">🐱‍⚕️</div>
+                <div class="achievement-name">健康卫士</div>
+                <div class="achievement-desc">完成10个健康任务</div>
+            </div>
+
+            <div class="achievement-card unlocked">
+                <div class="achievement-badge">
+                    <i class="fas fa-star"></i>
+                </div>
+                <div class="achievement-icon">🐱‍👔</div>
+                <div class="achievement-name">会议达人</div>
+                <div class="achievement-desc">参加30次会议</div>
+            </div>
+
+            <div class="achievement-card locked">
+                <div class="achievement-icon">🐱‍🌈</div>
+                <div class="achievement-name">隐藏猫咪</div>
+                <div class="achievement-desc">收集20张卡解锁</div>
+            </div>
+
+            <div class="achievement-card locked">
+                <div class="achievement-icon">🐱‍🔥</div>
+                <div class="achievement-name">传奇猫王</div>
+                <div class="achievement-desc">连续30天完成任务</div>
+            </div>
+
+            <div class="achievement-card locked">
+                <div class="achievement-icon">🐱‍💎</div>
+                <div class="achievement-name">钻石猫咪</div>
+                <div class="achievement-desc">完成1000个任务</div>
+            </div>
+        </div>
+
+        <div class="section-title">
+            <i class="fas fa-flag" style="color: #4ECDC4;"></i>
+            里程碑
+        </div>
+
+        <div class="milestone-list">
+            <div class="milestone-item">
+                <div class="milestone-icon">
+                    <i class="fas fa-calendar-check"></i>
+                </div>
+                <div class="milestone-content">
+                    <div class="milestone-title">连续完成7天</div>
+                    <div class="milestone-desc">保持每日任务完成记录</div>
+                </div>
+                <div class="milestone-status">已完成</div>
+            </div>
+
+            <div class="milestone-item">
+                <div class="milestone-icon">
+                    <i class="fas fa-tasks"></i>
+                </div>
+                <div class="milestone-content">
+                    <div class="milestone-title">完成100个任务</div>
+                    <div class="milestone-desc">累计完成100个任务</div>
+                </div>
+                <div class="milestone-status">进行中 (87/100)</div>
+            </div>
+
+            <div class="milestone-item">
+                <div class="milestone-icon">
+                    <i class="fas fa-fire"></i>
+                </div>
+                <div class="milestone-content">
+                    <div class="milestone-title">连续30天</div>
+                    <div class="milestone-desc">连续30天使用应用</div>
+                </div>
+                <div class="milestone-status">进行中 (15/30)</div>
+            </div>
+        </div>
+
+        <div class="share-section">
+            <button class="share-btn">
+                <i class="fas fa-share-alt"></i>
+                分享我的成就
+            </button>
+        </div>
+    </div>
+
+    <div class="bottom-nav">
+        <a href="#" class="nav-item">
+            <i class="fas fa-home nav-icon"></i>
+            <span>主页</span>
+        </a>
+        <a href="#" class="nav-item active">
+            <i class="fas fa-trophy nav-icon"></i>
+            <span>成就</span>
+        </a>
+        <a href="#" class="nav-item">
+            <i class="fas fa-chart-bar nav-icon"></i>
+            <span>统计</span>
+        </a>
+        <a href="#" class="nav-item">
+            <i class="fas fa-search nav-icon"></i>
+            <span>搜索</span>
+        </a>
+        <a href="#" class="nav-item">
+            <i class="fas fa-cog nav-icon"></i>
+            <span>设置</span>
+        </a>
+    </div>
+
+    <script>
+        // 成就卡片点击效果
+        document.querySelectorAll('.achievement-card.unlocked').forEach(card => {
+            card.addEventListener('click', function() {
+                this.style.transform = 'scale(0.95)';
+                setTimeout(() => {
+                    this.style.transform = 'scale(1)';
+                }, 150);
+            });
+        });
+
+        // 分享按钮点击效果
+        document.querySelector('.share-btn').addEventListener('click', function() {
+            this.style.transform = 'scale(0.95)';
+            setTimeout(() => {
+                this.style.transform = 'scale(1)';
+            }, 150);
+        });
+    </script>
+</body>
+</html> 

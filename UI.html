@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Egg计划工具 - UI设计总览</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background-color: #f6f6f6;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .header h1 {
+            color: #333;
+            font-size: 32px;
+            margin-bottom: 10px;
+        }
+
+        .header p {
+            color: #666;
+            font-size: 16px;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+            gap: 30px;
+            justify-items: center;
+        }
+
+        .page-container {
+            text-align: center;
+        }
+
+        .page-title {
+            font-size: 18px;
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 15px;
+            padding: 10px;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+
+        .iframe-wrapper {
+            border: 3px solid #4ECDC4;
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+            background: white;
+        }
+
+        iframe {
+            width: 400px;
+            height: 850px;
+            border: none;
+            display: block;
+        }
+
+        .footer {
+            text-align: center;
+            margin-top: 40px;
+            padding: 20px;
+            color: #666;
+            font-size: 14px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🐱 Egg计划工具 - UI设计总览</h1>
+            <p>所有页面的设计展示，使用iframe技术整合</p>
+        </div>
+
+        <div class="grid">
+            <div class="page-container">
+                <div class="page-title">🏠 主页面</div>
+                <div class="iframe-wrapper">
+                    <iframe src="main-screen.html"></iframe>
+                </div>
+            </div>
+
+            <div class="page-container">
+                <div class="page-title">🏆 成就图鉴页</div>
+                <div class="iframe-wrapper">
+                    <iframe src="achievement-screen.html"></iframe>
+                </div>
+            </div>
+
+            <div class="page-container">
+                <div class="page-title">🎤 语音输入页</div>
+                <div class="iframe-wrapper">
+                    <iframe src="voice-input-screen.html"></iframe>
+                </div>
+            </div>
+
+            <div class="page-container">
+                <div class="page-title">📊 统计页面</div>
+                <div class="iframe-wrapper">
+                    <iframe src="statistics-screen.html"></iframe>
+                </div>
+            </div>
+
+            <div class="page-container">
+                <div class="page-title">⚙️ 设置页面</div>
+                <div class="iframe-wrapper">
+                    <iframe src="settings-screen.html"></iframe>
+                </div>
+            </div>
+
+            <div class="page-container">
+                <div class="page-title">📝 任务详情页</div>
+                <div class="iframe-wrapper">
+                    <iframe src="task-detail-screen.html"></iframe>
+                </div>
+            </div>
+
+            <div class="page-container">
+                <div class="page-title">➕ 任务创建页</div>
+                <div class="iframe-wrapper">
+                    <iframe src="create-task-screen.html"></iframe>
+                </div>
+            </div>
+
+            <div class="page-container">
+                <div class="page-title">🔍 搜索页面</div>
+                <div class="iframe-wrapper">
+                    <iframe src="search-screen.html"></iframe>
+                </div>
+            </div>
+        </div>
+
+        <div class="footer">
+            <p>Egg计划工具 - 原生安卓AI任务管理应用</p>
+            <p>设计规范：森林主题 + 毛玻璃卡片 + 猫咪元素</p>
+        </div>
+    </div>
+</body>
+</html> 
